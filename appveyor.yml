@@ -1,0 +1,41 @@
+# Commented sections below can be used to run tests on the CI server
+# https://simulatedgreg.gitbooks.io/electron-vue/content/en/testing.html#on-the-subject-of-ci-testing
+# https://www.appveyor.com/docs/appveyor-yml/
+version: 0.1.{build}
+
+branches:
+  only:
+    - master
+
+# skip_non_tags: true
+only_commits:
+  message: /^trigger ci$/
+
+image: Visual Studio 2017
+platform:
+  - x64
+
+cache:
+  - node_modules
+  - '%APPDATA%\npm-cache'
+  - '%USERPROFILE%\.electron'
+  - '%USERPROFILE%\AppData\Local\Yarn\cache'
+
+max_jobs: 1
+
+init:
+  - git config --global core.autocrlf input
+
+install:
+  - ps: Install-Product node 8 x64
+  # - choco install yarn --ignore-dependencies
+  - git reset --hard HEAD
+  - yarn
+  - node --version
+
+build_script:
+  #- yarn test
+  - yarn build
+
+test: off
+
